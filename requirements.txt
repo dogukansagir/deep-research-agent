@@ -1,0 +1,11 @@
+langgraph
+langchain-core
+instructor
+openai
+pydantic
+tavily-python
+langfuse
+fastapi
+uvicorn
+python-dotenv
+httpx
