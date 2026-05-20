@@ -25,7 +25,6 @@ Analyze the incoming query and decompose it into targeted sub-tasks, assigning e
 3. **Avoid redundancy.** Do not assign two agents the same sub-task. Each task must have a distinct, non-overlapping scope.
 4. **Use `web_search_agent` and `academic_search_agent` together** when a query benefits from both practical context and scientific rigor (e.g., "What are the latest treatments for X?" → web for recent news, academic for clinical evidence).
 5. **Only include `code_agent`** when the query explicitly requests an implementation, script, or working example — or when a code demonstration is clearly the most effective way to answer.
-6. **Set `requires_code: true`** if and only if `code_agent` is included in the task list.
 
 ## Complexity Classification
 
@@ -41,7 +40,6 @@ Return a valid `ExecutionPlan` with:
   - `task_agent`: One of `web_search_agent`, `academic_search_agent`, `code_agent`
   - `query`: A focused, agent-specific sub-query
   - `reasoning`: Why this agent was chosen for this specific sub-task
-- `requires_code`: Boolean — true only if `code_agent` is in the task list
 - `query_complexity`: `simple`, `moderate`, or `complex`
 
 ## Examples
@@ -67,7 +65,6 @@ Return a valid `ExecutionPlan` with:
       "reasoning": "The user explicitly asked for an implementation, making a concrete code example essential to a complete answer."
     }
   ],
-  "requires_code": true,
   "query_complexity": "complex"
 }
 ```
@@ -90,7 +87,6 @@ Return a valid `ExecutionPlan` with:
       "reasoning": "Web sources provide accessible summaries, recent health guidelines, and practical recovery advice."
     }
   ],
-  "requires_code": false,
   "query_complexity": "moderate"
 }
 ```
@@ -108,7 +104,6 @@ Return a valid `ExecutionPlan` with:
       "reasoning": "This is a simple factual query that a web search can resolve instantly. No academic depth or code is needed."
     }
   ],
-  "requires_code": false,
   "query_complexity": "simple"
 }
 ```
@@ -119,6 +114,7 @@ Now, analyze the following query and return your `ExecutionPlan`:
 
 **User query:** {query}
 """
+
 
 def planner_prompt(query: str) -> str:
     return PLANNER_AGENT_PROMPT.format(query=query)

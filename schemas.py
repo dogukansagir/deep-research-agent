@@ -10,7 +10,6 @@ class AgentTask(BaseModel):
 
 class ExecutionPlan(BaseModel):
     tasks: list[AgentTask]
-    requires_code: bool
     query_complexity: Literal["simple", "moderate", "complex"] = Field(..., description="The complexity level of the query.")
 
 class WebSearchResult(BaseModel):
