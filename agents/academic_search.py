@@ -9,31 +9,43 @@ from langfuse import observe
 class KeyFindings(BaseModel):
     key_findings: list[str]
 
+def reconstruct_abstract(abstract_inverted_index: dict) -> str:
+    if not abstract_inverted_index:
+        return ""
+    positions = {}
+    for word, indices in abstract_inverted_index.items():
+        for idx in indices:
+            positions[idx] = word
+    return " ".join(positions[i] for i in sorted(positions.keys()))
+
 @observe()
-def academic_search_agent(task: AgentTask) -> dict[str, list[AcademicSearchResult]]:
+def academic_search_agent(task: AgentTask) -> dict:
     response = httpx.get(
-    config.SEMANTIC_SCHOLAR_URL,
-    params={
-        "query": task.query,
-        "limit": 5,
-        "fields": "title,authors,year,abstract,url"
-    }
+        config.OPENALEX_URL,
+        params={
+            "search": task.query,
+            "per_page": 5,
+        }
     )
     results = []
-    for paper in response.json().get("data", []):
-        if not paper.get("abstract"):
+    for paper in response.json().get("results", []):
+        abstract = reconstruct_abstract(paper.get("abstract_inverted_index", {}))
+        if not abstract:
             continue
+        url = paper.get("primary_location", {}) or {}
+        url = url.get("landing_page_url", "")
+        authors = [a["author"]["display_name"] for a in paper.get("authorships", [])]
         findings = llm_client.chat.completions.create(
             model=config.DEEPSEEK_MODEL,
             response_model=KeyFindings,
-            messages=[{"role": "user", "content": academic_search_prompt(paper['abstract'])}]
+            messages=[{"role": "user", "content": academic_search_prompt(abstract)}]
         )
         results.append(AcademicSearchResult(
-            url=paper["url"],
-            title=paper["title"],
-            authors=[author["name"] for author in paper["authors"]],
-            year=paper["year"],
-            abstract=paper["abstract"],
+            url=url,
+            title=paper.get("display_name", ""),
+            authors=authors,
+            publication_year=paper.get("publication_year", 0),
+            abstract=abstract,
             key_findings=findings.key_findings
         ))
     return {"academic_results": results}
