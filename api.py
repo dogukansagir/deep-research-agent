@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from graph import app as agent_app  
 from pydantic import BaseModel
+from langfuse import observe, get_client
 
 class ResearchRequest(BaseModel):
     query: str
@@ -12,7 +13,10 @@ def format_response(answer, citations):
     formatted_citations = "\n".join([f"{citation.position}. {citation.title} ({citation.url})" for citation in citations])
     return f"Answer:\n{answer}\n\nCitations:\n{formatted_citations}"
 
+@observe(name="research_pipeline")
 def stream_research(initial_state):
+    langfuse = get_client()
+    langfuse.update_current_trace(name=f"research: {initial_state['query']}")
     final_state = {}
     for chunk in agent_app.stream(initial_state, stream_mode="updates"):
         node_name = list(chunk.keys())[0]
