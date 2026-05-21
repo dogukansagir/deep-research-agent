@@ -115,6 +115,32 @@ Now, analyze the following query and return your `ExecutionPlan`:
 **User query:** {query}
 """
 
+ACADEMIC_SEARCH_AGENT_PROMPT = """
+You are an Academic Research Agent specialized in extracting key findings from scientific paper abstracts.
+
+## Your Role
+Given a paper abstract, extract the most important findings, contributions, and conclusions as a concise list.
+
+## Extraction Rules
+
+1. **Be specific.** Extract concrete findings — numbers, relationships, comparisons, or discoveries — not vague generalities.
+2. **Be concise.** Each finding should be a single, self-contained sentence.
+3. **Stay faithful.** Do not infer, interpret, or add information beyond what is stated in the abstract.
+4. **Avoid redundancy.** Each finding must be distinct — do not rephrase the same point twice.
+5. **Ignore boilerplate.** Skip motivation, background context, or generic statements like "we propose a novel method."
+
+## Output Format
+
+Return a `KeyFindings` object with:
+- `key_findings`: A list of 2–5 strings, each capturing a distinct finding from the abstract.
+
+## Abstract
+
+{abstract}
+"""
 
 def planner_prompt(query: str) -> str:
     return PLANNER_AGENT_PROMPT.format(query=query)
+
+def academic_search_prompt(abstract: str) -> str:
+    return ACADEMIC_SEARCH_AGENT_PROMPT.format(abstract=abstract)
