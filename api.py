@@ -16,7 +16,7 @@ def format_response(answer, citations):
 @observe(name="research_pipeline")
 def stream_research(initial_state):
     langfuse = get_client()
-    langfuse.update_current_trace(name=f"research: {initial_state['query']}")
+    langfuse.update_current_span(name=f"research: {initial_state['query']}")
     final_state = {}
     for chunk in agent_app.stream(initial_state, stream_mode="updates"):
         node_name = list(chunk.keys())[0]
