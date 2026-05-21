@@ -4,10 +4,12 @@ import httpx
 from pydantic import BaseModel
 from prompts import academic_search_prompt
 from llm_client import llm_client
+from langfuse import observe
 
 class KeyFindings(BaseModel):
     key_findings: list[str]
 
+@observe()
 def academic_search_agent(task: AgentTask) -> dict[str, list[AcademicSearchResult]]:
     response = httpx.get(
     config.SEMANTIC_SCHOLAR_URL,

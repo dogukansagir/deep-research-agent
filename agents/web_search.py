@@ -3,6 +3,7 @@ import config
 from schemas import AgentTask, WebSearchResult
 from typing import Literal
 from urllib.parse import urlparse
+from langfuse import observe
 
 client = TavilyClient(api_key=config.TAVILY_API_KEY)
 FORUM_DOMAINS = {"reddit.com", "stackoverflow.com", "news.ycombinator.com", "quora.com", "discourse.org"}
@@ -24,6 +25,7 @@ def guess_source_type(url: str) -> Literal["blog", "docs", "forum", "news", "oth
         return "blog"
     return "other"
 
+@observe()
 def web_search_agent(task: AgentTask) -> dict[str, list[WebSearchResult]]:
     search_results = client.search(task.query, max_results=10)
     web_results = []

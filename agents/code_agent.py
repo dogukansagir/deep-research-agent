@@ -2,7 +2,9 @@ import config
 from prompts import code_prompt
 from schemas import AgentTask, CodeResult
 from llm_client import llm_client
+from langfuse import observe
 
+@observe()
 def code_agent(task: AgentTask) -> dict[str, CodeResult]:
     response = llm_client.chat.completions.create(
         model=config.DEEPSEEK_MODEL,

@@ -2,7 +2,9 @@ from schemas import AgentState, SynthesizedAnswer
 import config
 from prompts import synthesizer_prompt
 from llm_client import llm_client
+from langfuse import observe
 
+@observe()
 def synthesizer(state: AgentState) -> SynthesizedAnswer:
     response = llm_client.chat.completions.create(
         model=config.DEEPSEEK_MODEL,

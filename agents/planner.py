@@ -2,7 +2,9 @@ import config
 from prompts import planner_prompt
 from schemas import AgentState, ExecutionPlan
 from llm_client import llm_client
+from langfuse import observe
 
+@observe()
 def planner(state: AgentState):
 
     query = state["query"]
