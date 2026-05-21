@@ -57,7 +57,7 @@ class AgentState(TypedDict):
     execution_plan: ExecutionPlan
     web_results: Annotated[list[WebSearchResult], operator.add]
     academic_results: Annotated[list[AcademicSearchResult], operator.add]
-    code_results: CodeResult | None
+    code_result: CodeResult | None
     synthesized_answer: SynthesizedAnswer
     eval_result: EvalResult
     retry_count: int
