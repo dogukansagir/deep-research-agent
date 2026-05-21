@@ -2,13 +2,8 @@ from schemas import AgentTask, AcademicSearchResult
 import config
 import httpx
 from pydantic import BaseModel
-import instructor
-from openai import OpenAI
 from prompts import academic_search_prompt
-
-client = instructor.from_openai(
-    OpenAI(api_key=config.DEEPSEEK_API_KEY, base_url=config.DEEPSEEK_API_URL)
-)
+from llm_client import llm_client
 
 class KeyFindings(BaseModel):
     key_findings: list[str]
@@ -26,7 +21,7 @@ def academic_search_agent(task: AgentTask) -> list[AcademicSearchResult]:
     for paper in response.json().get("data", []):
         if not paper.get("abstract"):
             continue
-        findings = client.chat.completions.create(
+        findings = llm_client.chat.completions.create(
             model=config.DEEPSEEK_MODEL,
             response_model=KeyFindings,
             messages=[{"role": "user", "content": academic_search_prompt(paper['abstract'])}]
