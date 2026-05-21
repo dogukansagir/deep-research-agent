@@ -24,10 +24,10 @@ def guess_source_type(url: str) -> Literal["blog", "docs", "forum", "news", "oth
         return "blog"
     return "other"
 
-def web_search_agent(task: AgentTask) -> list[WebSearchResult]:
-    search_results = client.search(task.query, num_results=10)
+def web_search_agent(task: AgentTask) -> dict[str, list[WebSearchResult]]:
+    search_results = client.search(task.query, max_results=10)
     web_results = []
-    for result in search_results:
+    for result in search_results["results"]:
         web_results.append(WebSearchResult(
             url=result["url"],
             title=result["title"],
@@ -35,4 +35,4 @@ def web_search_agent(task: AgentTask) -> list[WebSearchResult]:
             source_type=guess_source_type(result["url"]),
             relevancy_score=result["score"]
         ))
-    return web_results
+    return {"web_results": web_results}

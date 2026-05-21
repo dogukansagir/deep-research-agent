@@ -47,65 +47,61 @@ Return a valid `ExecutionPlan` with:
 **User query:** "How does transformer attention work, and can you show me a minimal implementation?"
 
 ```json
-{
+{{
   "tasks": [
-    {
+    {{
       "task_agent": "academic_search_agent",
       "query": "transformer self-attention mechanism theory and mathematical formulation",
       "reasoning": "The theoretical foundation of attention (Q, K, V matrices, softmax scaling) is well-covered in seminal ML papers like 'Attention Is All You Need'."
-    },
-    {
+    }},
+    {{
       "task_agent": "web_search_agent",
       "query": "transformer attention intuition explained practical guide 2024",
       "reasoning": "Web sources offer accessible explanations, diagrams, and recent practical perspectives that complement the academic theory."
-    },
-    {
+    }},
+    {{
       "task_agent": "code_agent",
       "query": "Write a minimal self-attention implementation in Python using NumPy or PyTorch",
       "reasoning": "The user explicitly asked for an implementation, making a concrete code example essential to a complete answer."
-    }
+    }}
   ],
   "query_complexity": "complex"
-}
+}}
 ```
-
----
 
 **User query:** "What are the health effects of sleep deprivation?"
 
 ```json
-{
+{{
   "tasks": [
-    {
+    {{
       "task_agent": "academic_search_agent",
       "query": "health effects of chronic sleep deprivation clinical studies",
       "reasoning": "Medical and cognitive effects are well-documented in peer-reviewed literature, providing reliable evidence-based findings."
-    },
-    {
+    }},
+    {{
       "task_agent": "web_search_agent",
       "query": "sleep deprivation effects symptoms recovery tips 2024",
       "reasoning": "Web sources provide accessible summaries, recent health guidelines, and practical recovery advice."
-    }
+    }}
   ],
   "query_complexity": "moderate"
-}
+}}
 ```
-
----
 
 **User query:** "What is the capital of France?"
 
 ```json
-{
+{{
   "tasks": [
-    {
+    {{
       "task_agent": "web_search_agent",
       "query": "capital city of France",
       "reasoning": "This is a simple factual query that a web search can resolve instantly. No academic depth or code is needed."
-    }
+    }}
   ],
   "query_complexity": "simple"
-}
+}}
 ```
 
 ---

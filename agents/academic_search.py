@@ -8,7 +8,7 @@ from llm_client import llm_client
 class KeyFindings(BaseModel):
     key_findings: list[str]
 
-def academic_search_agent(task: AgentTask) -> list[AcademicSearchResult]:
+def academic_search_agent(task: AgentTask) -> dict[str, list[AcademicSearchResult]]:
     response = httpx.get(
     config.SEMANTIC_SCHOLAR_URL,
     params={
@@ -34,4 +34,4 @@ def academic_search_agent(task: AgentTask) -> list[AcademicSearchResult]:
             abstract=paper["abstract"],
             key_findings=findings.key_findings
         ))
-    return results
+    return {"academic_results": results}
