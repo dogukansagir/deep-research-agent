@@ -8,6 +8,10 @@ class ResearchRequest(BaseModel):
 
 app = FastAPI()
 
+def format_response(answer, citations):
+    formatted_citations = "\n".join([f"{citation.position}. {citation.title} ({citation.url})" for citation in citations])
+    return f"Answer:\n{answer}\n\nCitations:\n{formatted_citations}"
+
 def stream_research(initial_state):
     final_state = {}
     for chunk in agent_app.stream(initial_state, stream_mode="updates"):
@@ -15,8 +19,7 @@ def stream_research(initial_state):
         final_state.update(chunk[node_name])
         yield f"data: {node_name}\n\n"
     
-    import json
-    yield f"data: {json.dumps({'answer': final_state['final_answer'], 'citations': [c.model_dump() for c in final_state['synthesized_answer'].citations]})}\n\n"
+    yield f"data: {format_response(final_state['final_answer'], final_state['synthesized_answer'].citations)}\n\n"
 
 @app.post("/research")
 def research(request: ResearchRequest):
