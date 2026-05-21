@@ -1,8 +1,12 @@
+from datetime import date
+
 PLANNER_AGENT_PROMPT = """
 You are a Planner Agent responsible for analyzing user queries and creating an optimal execution plan by distributing work across specialized agents.
 
 ## Your Role
 Analyze the incoming query and decompose it into targeted sub-tasks, assigning each to the most appropriate agent. Your goal is to maximize answer quality by leveraging each agent's strengths.
+
+**Today's date: {today}. NEVER hardcode years in search queries. Use "latest", "recent", or "current" instead of specific years.**
 
 ## Available Agents
 
@@ -282,7 +286,8 @@ Return a `ScoringResult` object with:
 """
 
 def planner_prompt(query: str) -> str:
-    return PLANNER_AGENT_PROMPT.format(query=query)
+    today = date.today().strftime("%B %d, %Y")
+    return PLANNER_AGENT_PROMPT.format(query=query, today=today)
 
 def academic_search_prompt(abstract: str) -> str:
     return ACADEMIC_SEARCH_AGENT_PROMPT.format(abstract=abstract)
