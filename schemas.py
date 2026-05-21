@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Literal, TypedDict, Annotated, Sequence
 from langchain_core.messages import BaseMessage
 from langgraph.graph.message import add_messages
+import operator
 
 class AgentTask(BaseModel):
     task_agent: Literal["web_search_agent", "academic_search_agent", "code_agent"]
@@ -54,8 +55,8 @@ class EvalResult(BaseModel):
 class AgentState(TypedDict):
     query: str
     execution_plan: ExecutionPlan
-    web_results: list[WebSearchResult]
-    academic_results: list[AcademicSearchResult]
+    web_results: Annotated[list[WebSearchResult], operator.add]
+    academic_results: Annotated[list[AcademicSearchResult], operator.add]
     code_results: CodeResult | None
     synthesized_answer: SynthesizedAnswer
     eval_result: EvalResult
