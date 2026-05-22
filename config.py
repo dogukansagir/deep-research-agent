@@ -15,3 +15,5 @@ if not DEEPSEEK_API_KEY:
     raise ValueError("DEEPSEEK_API_KEY is not set")
 if not TAVILY_API_KEY:
     raise ValueError("TAVILY_API_KEY is not set")
+if not LANGFUSE_PUBLIC_KEY or not LANGFUSE_SECRET_KEY:
+    raise ValueError("LANGFUSE_PUBLIC_KEY and LANGFUSE_SECRET_KEY must be set")
