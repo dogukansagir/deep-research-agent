@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deep Research</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #0a0a0f;
@@ -17,7 +17,6 @@
             --text-dim: #6b6878;
             --text-mid: #9b96a8;
             --green: #4ade80;
-            --red: #f87171;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -178,7 +177,6 @@
         .steps {
             display: flex;
             flex-direction: column;
-            gap: 0;
             border: 1px solid var(--border);
             border-radius: 4px;
             overflow: hidden;
@@ -196,12 +194,7 @@
         }
 
         .step:last-child { border-bottom: none; }
-
-        .step.active {
-            background: var(--accent-dim);
-            color: var(--accent);
-        }
-
+        .step.active { background: var(--accent-dim); color: var(--accent); }
         .step.done { color: var(--text-mid); }
 
         .step-dot {
@@ -243,32 +236,25 @@
             color: var(--text-dim);
         }
 
-        .answer-score {
-            font-size: 0.65rem;
-            color: var(--green);
-            letter-spacing: 0.05em;
-        }
-
         .answer-body {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 4px;
-            padding: 36px 40px;
-            line-height: 1.8;
+            padding: 28px 32px;
+            line-height: 1.55;
             color: var(--text);
-            font-family: 'DM Mono', monospace;
-			font-size: 0.85rem;
-			line-height: 1.9;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            white-space: normal;
         }
 
         .citations-section {
-            margin-top: 24px;
+            margin-top: 16px;
             border-top: 1px solid var(--border);
-            padding-top: 20px;
+            padding-top: 14px;
         }
 
         .citations-label {
-            font-family: 'DM Mono', monospace;
             font-size: 0.65rem;
             letter-spacing: 0.15em;
             text-transform: uppercase;
@@ -279,10 +265,10 @@
         .citation-item {
             display: flex;
             gap: 12px;
-            padding: 8px 0;
+            padding: 5px 0;
             border-bottom: 1px solid var(--border);
-            font-family: 'DM Mono', monospace;
             font-size: 0.72rem;
+            align-items: flex-start;
         }
 
         .citation-item:last-child { border-bottom: none; }
@@ -290,15 +276,19 @@
         .citation-num {
             color: var(--accent);
             flex-shrink: 0;
-            width: 20px;
+            width: 24px;
+            padding-top: 1px;
         }
 
-        .citation-content { flex: 1; }
+        .citation-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
 
         .citation-title {
             color: var(--text);
-            display: block;
-            margin-bottom: 2px;
         }
 
         .citation-url {
@@ -308,6 +298,20 @@
         }
 
         .citation-url:hover { color: var(--accent); }
+
+        
+        #answer-text p {
+            margin: 0 0 0.9rem 0;
+        }
+
+        #answer-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        #answer-text br {
+            line-height: 1.2;
+        }
+
 
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(12px); }
@@ -343,37 +347,22 @@
         <div class="pipeline" id="pipeline">
             <div class="pipeline-label">Pipeline</div>
             <div class="steps">
-                <div class="step" id="step-planner_agent">
-                    <div class="step-dot"></div> Planner
-                </div>
-                <div class="step" id="step-web_search_agent">
-                    <div class="step-dot"></div> Web Search
-                </div>
-                <div class="step" id="step-academic_search_agent">
-                    <div class="step-dot"></div> Academic Search
-                </div>
-                <div class="step" id="step-coding_agent">
-                    <div class="step-dot"></div> Code Agent
-                </div>
-                <div class="step" id="step-synthesizer_agent">
-                    <div class="step-dot"></div> Synthesizer
-                </div>
-                <div class="step" id="step-critic_agent">
-                    <div class="step-dot"></div> Critic
-                </div>
-                <div class="step" id="step-finalize">
-                    <div class="step-dot"></div> Finalize
-                </div>
+                <div class="step" id="step-planner_agent"><div class="step-dot"></div> Planner</div>
+                <div class="step" id="step-web_search_agent"><div class="step-dot"></div> Web Search</div>
+                <div class="step" id="step-academic_search_agent"><div class="step-dot"></div> Academic Search</div>
+                <div class="step" id="step-coding_agent"><div class="step-dot"></div> Code Agent</div>
+                <div class="step" id="step-synthesizer_agent"><div class="step-dot"></div> Synthesizer</div>
+                <div class="step" id="step-critic_agent"><div class="step-dot"></div> Critic</div>
+                <div class="step" id="step-finalize"><div class="step-dot"></div> Finalize</div>
             </div>
         </div>
 
         <div class="answer-container" id="answer-container">
             <div class="answer-header">
                 <span class="answer-label">Answer</span>
-                <span class="answer-score" id="answer-score"></span>
             </div>
-            <div class="answer-body" id="answer-body">
-                <div id="answer-text"></div>
+            <div class="answer-body">
+                <div id="answer-text" style="display:flex; flex-direction:column; gap:0.75rem;"></div>
                 <div class="citations-section" id="citations-section" style="display:none">
                     <div class="citations-label">Sources</div>
                     <div id="citations-list"></div>
@@ -400,18 +389,71 @@
             setStep(name, 'active');
         }
 
+        function renderAnswer(fullData) {
+            const answerStart = fullData.indexOf("Answer:");
+            const citationsStart = fullData.indexOf("Citations:");
+
+            let answerText = "";
+            let citationsText = "";
+
+            if (answerStart !== -1 && citationsStart !== -1) {
+                answerText = fullData.slice(answerStart + 7, citationsStart).trim();
+                citationsText = fullData.slice(citationsStart + 10).trim();
+            } else if (answerStart !== -1) {
+                answerText = fullData.slice(answerStart + 7).trim();
+            }
+
+            answerText = answerText.replace(/\\n/g, '\n');
+            document.getElementById("answer-container").style.display = "block";
+            const cleaned = answerText
+                .replace(/\n{3,}/g, "\n\n")
+                .trim();
+
+            const paragraphs = cleaned
+                .split(/\n\n+/)
+                .map(p => `<p>${p.replace(/\n/g, "<br>")}</p>`)
+                .join("");
+
+            document.getElementById("answer-text").innerHTML = paragraphs;
+
+            if (citationsText) {
+                const citationParts = citationsText.split(" | ");
+                const list = document.getElementById("citations-list");
+                list.innerHTML = "";
+
+                citationParts.forEach(part => {
+                    const trimmed = part.trim().replace(/\n/g, "");
+                    const match = trimmed.match(/^(\d+)\.\s+(.*?)\s+\((https?:\/\/[^)]+)\)$/);
+                    if (match) {
+                        const [, num, title, url] = match;
+                        list.innerHTML += `
+                            <div class="citation-item">
+                                <span class="citation-num">[${num}]</span>
+                                <div class="citation-content">
+                                    <span class="citation-title">${title}</span>
+                                    <a class="citation-url" href="${url}" target="_blank">${url}</a>
+                                </div>
+                            </div>`;
+                    }
+                });
+
+                if (citationParts.length > 0) {
+                    document.getElementById("citations-section").style.display = "block";
+                }
+            }
+        }
+
         async function search() {
             const query = document.getElementById("query").value.trim();
             if (!query) return;
 
             const btn = document.getElementById("btn");
             const pipeline = document.getElementById("pipeline");
-            const answerContainer = document.getElementById("answer-container");
 
             btn.disabled = true;
             currentStep = null;
             pipeline.style.display = "block";
-            answerContainer.style.display = "none";
+            document.getElementById("answer-container").style.display = "none";
             document.getElementById("answer-text").textContent = "";
             document.getElementById("citations-list").innerHTML = "";
             document.getElementById("citations-section").style.display = "none";
@@ -426,6 +468,9 @@
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
             let buffer = "";
+            let fullData = "";
+
+            const stepNames = ["planner_agent","web_search_agent","academic_search_agent","coding_agent","synthesizer_agent","critic_agent","finalize"];
 
             while (true) {
                 const { done, value } = await reader.read();
@@ -439,44 +484,17 @@
                     if (!line.startsWith("data: ")) continue;
                     const data = line.slice(6);
 
-                    const stepNames = ["planner_agent","web_search_agent","academic_search_agent","coding_agent","synthesizer_agent","critic_agent","finalize"];
                     if (stepNames.includes(data.trim())) {
                         markActive(data.trim());
-                    } else if (data.includes("Answer:")) {
-                        if (currentStep) markDone(currentStep);
-
-                        const answerMatch = data.match(/Answer:\s*(.*?)\s*Citations:/s);
-                        const citationsMatch = data.match(/Citations:\s*(.*)/s);
-
-                        answerContainer.style.display = "block";
-                        document.getElementById("answer-text").textContent = answerMatch ? answerMatch[1].trim() : data;
-
-                        if (citationsMatch) {
-                            const citationParts = citationsMatch[1].split(" | ");
-                            const list = document.getElementById("citations-list");
-                            list.innerHTML = "";
-
-                            citationParts.forEach(part => {
-                                const match = part.trim().match(/^(\d+)\.\s+(.*?)\s+\((https?:\/\/[^)]+)\)$/);
-                                if (match) {
-                                    const [, num, title, url] = match;
-                                    list.innerHTML += `
-                                        <div class="citation-item">
-                                            <span class="citation-num">[${num}]</span>
-                                            <div class="citation-content">
-                                                <span class="citation-title">${title}</span>
-                                                <a class="citation-url" href="${url}" target="_blank">${url}</a>
-                                            </div>
-                                        </div>`;
-                                }
-                            });
-
-                            if (citationParts.length > 0) {
-                                document.getElementById("citations-section").style.display = "block";
-                            }
-                        }
+                    } else {
+                        fullData += data + "\n";
                     }
                 }
+            }
+
+            if (currentStep) markDone(currentStep);
+            if (fullData.includes("Answer:")) {
+                renderAnswer(fullData);
             }
 
             btn.disabled = false;

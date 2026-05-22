@@ -19,7 +19,8 @@ def index():
 
 def format_response(answer, citations):
     formatted_citations = " | ".join([f"{citation.position}. {citation.title} ({citation.url})" for citation in citations])
-    return f"Answer: {answer} Citations: {formatted_citations}"
+    answer_escaped = answer.replace('\n', '\\n')
+    return f"Answer: {answer_escaped} Citations: {formatted_citations}"
 
 @observe(name="research_pipeline")
 def stream_research(initial_state):
