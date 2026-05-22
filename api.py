@@ -3,15 +3,23 @@ from fastapi.responses import StreamingResponse
 from graph import app as agent_app  
 from pydantic import BaseModel
 from langfuse import observe, get_client
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 class ResearchRequest(BaseModel):
     query: str
 
 app = FastAPI()
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/")
+def index():
+    return FileResponse("static/index.html")
+
 def format_response(answer, citations):
-    formatted_citations = "\n".join([f"{citation.position}. {citation.title} ({citation.url})" for citation in citations])
-    return f"Answer:\n{answer}\n\nCitations:\n{formatted_citations}"
+    formatted_citations = " | ".join([f"{citation.position}. {citation.title} ({citation.url})" for citation in citations])
+    return f"Answer: {answer} Citations: {formatted_citations}"
 
 @observe(name="research_pipeline")
 def stream_research(initial_state):

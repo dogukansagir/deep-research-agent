@@ -18,7 +18,6 @@ def reconstruct_abstract(abstract_inverted_index: dict) -> str:
             positions[idx] = word
     return " ".join(positions[i] for i in sorted(positions.keys()))
 
-@observe()
 def findings_extraction(paper: dict) -> AcademicSearchResult:
     result = None
     abstract = reconstruct_abstract(paper.get("abstract_inverted_index", {}))

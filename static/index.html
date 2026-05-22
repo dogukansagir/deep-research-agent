@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Research</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --surface: #111118;
+            --border: #1e1e2e;
+            --accent: #c8a96e;
+            --accent-dim: rgba(200, 169, 110, 0.15);
+            --text: #e8e4dc;
+            --text-dim: #6b6878;
+            --text-mid: #9b96a8;
+            --green: #4ade80;
+            --red: #f87171;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0.4;
+        }
+
+        header {
+            padding: 32px 48px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+        }
+
+        .logo {
+            font-family: 'Instrument Serif', serif;
+            font-size: 1.4rem;
+            color: var(--accent);
+            letter-spacing: -0.02em;
+        }
+
+        .logo-tag {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 64px 24px 48px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 48px;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .hero h1 {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(2.4rem, 5vw, 3.8rem);
+            font-weight: 400;
+            line-height: 1.1;
+            color: var(--text);
+            letter-spacing: -0.03em;
+            margin-bottom: 12px;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .hero p {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            letter-spacing: 0.05em;
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: 780px;
+            animation: fadeUp 0.6s 0.1s ease both;
+        }
+
+        .search-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            transition: border-color 0.2s;
+        }
+
+        .search-wrap:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-dim);
+        }
+
+        .search-icon {
+            padding: 0 16px;
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            flex-shrink: 0;
+            letter-spacing: 0.1em;
+        }
+
+        input {
+            flex: 1;
+            padding: 16px 0;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        input::placeholder { color: var(--text-dim); }
+
+        button {
+            margin: 6px;
+            padding: 10px 20px;
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            border-radius: 2px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            transition: opacity 0.15s;
+            white-space: nowrap;
+        }
+
+        button:hover { opacity: 0.85; }
+        button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        .pipeline {
+            margin-top: 32px;
+            width: 100%;
+            max-width: 780px;
+            display: none;
+            animation: fadeUp 0.3s ease both;
+        }
+
+        .pipeline-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            transition: all 0.2s;
+        }
+
+        .step:last-child { border-bottom: none; }
+
+        .step.active {
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        .step.done { color: var(--text-mid); }
+
+        .step-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--border);
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+
+        .step.active .step-dot {
+            background: var(--accent);
+            box-shadow: 0 0 8px var(--accent);
+            animation: pulse 1s infinite;
+        }
+
+        .step.done .step-dot { background: var(--green); }
+
+        .answer-container {
+            margin-top: 32px;
+            width: 100%;
+            max-width: 780px;
+            display: none;
+            animation: fadeUp 0.4s ease both;
+        }
+
+        .answer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .answer-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+
+        .answer-score {
+            font-size: 0.65rem;
+            color: var(--green);
+            letter-spacing: 0.05em;
+        }
+
+        .answer-body {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 36px 40px;
+            line-height: 1.8;
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+			font-size: 0.85rem;
+			line-height: 1.9;
+        }
+
+        .citations-section {
+            margin-top: 24px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        .citations-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+        }
+
+        .citation-item {
+            display: flex;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+        }
+
+        .citation-item:last-child { border-bottom: none; }
+
+        .citation-num {
+            color: var(--accent);
+            flex-shrink: 0;
+            width: 20px;
+        }
+
+        .citation-content { flex: 1; }
+
+        .citation-title {
+            color: var(--text);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .citation-url {
+            color: var(--text-dim);
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .citation-url:hover { color: var(--accent); }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <span class="logo">Deep Research</span>
+        <span class="logo-tag">Multi-Agent Assistant</span>
+    </header>
+
+    <main>
+        <div class="hero">
+            <h1>Ask anything.<br><em>Get researched answers.</em></h1>
+            <p>Web · Academic Papers · Code Generation · Self-Evaluation</p>
+        </div>
+
+        <div class="search-container">
+            <div class="search-wrap">
+                <span class="search-icon">QUERY</span>
+                <input type="text" id="query" placeholder="How does flash attention work?" />
+                <button id="btn" onclick="search()">Research →</button>
+            </div>
+        </div>
+
+        <div class="pipeline" id="pipeline">
+            <div class="pipeline-label">Pipeline</div>
+            <div class="steps">
+                <div class="step" id="step-planner_agent">
+                    <div class="step-dot"></div> Planner
+                </div>
+                <div class="step" id="step-web_search_agent">
+                    <div class="step-dot"></div> Web Search
+                </div>
+                <div class="step" id="step-academic_search_agent">
+                    <div class="step-dot"></div> Academic Search
+                </div>
+                <div class="step" id="step-coding_agent">
+                    <div class="step-dot"></div> Code Agent
+                </div>
+                <div class="step" id="step-synthesizer_agent">
+                    <div class="step-dot"></div> Synthesizer
+                </div>
+                <div class="step" id="step-critic_agent">
+                    <div class="step-dot"></div> Critic
+                </div>
+                <div class="step" id="step-finalize">
+                    <div class="step-dot"></div> Finalize
+                </div>
+            </div>
+        </div>
+
+        <div class="answer-container" id="answer-container">
+            <div class="answer-header">
+                <span class="answer-label">Answer</span>
+                <span class="answer-score" id="answer-score"></span>
+            </div>
+            <div class="answer-body" id="answer-body">
+                <div id="answer-text"></div>
+                <div class="citations-section" id="citations-section" style="display:none">
+                    <div class="citations-label">Sources</div>
+                    <div id="citations-list"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentStep = null;
+
+        function setStep(name, state) {
+            const el = document.getElementById(`step-${name}`);
+            if (!el) return;
+            el.classList.remove('active', 'done');
+            if (state === 'active') el.classList.add('active');
+            if (state === 'done') el.classList.add('done');
+        }
+
+        function markDone(name) { setStep(name, 'done'); }
+        function markActive(name) {
+            if (currentStep) markDone(currentStep);
+            currentStep = name;
+            setStep(name, 'active');
+        }
+
+        async function search() {
+            const query = document.getElementById("query").value.trim();
+            if (!query) return;
+
+            const btn = document.getElementById("btn");
+            const pipeline = document.getElementById("pipeline");
+            const answerContainer = document.getElementById("answer-container");
+
+            btn.disabled = true;
+            currentStep = null;
+            pipeline.style.display = "block";
+            answerContainer.style.display = "none";
+            document.getElementById("answer-text").textContent = "";
+            document.getElementById("citations-list").innerHTML = "";
+            document.getElementById("citations-section").style.display = "none";
+            document.querySelectorAll(".step").forEach(s => s.classList.remove("active", "done"));
+
+            const response = await fetch("/research", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ query })
+            });
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = "";
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split("\n");
+                buffer = lines.pop();
+
+                for (const line of lines) {
+                    if (!line.startsWith("data: ")) continue;
+                    const data = line.slice(6);
+
+                    const stepNames = ["planner_agent","web_search_agent","academic_search_agent","coding_agent","synthesizer_agent","critic_agent","finalize"];
+                    if (stepNames.includes(data.trim())) {
+                        markActive(data.trim());
+                    } else if (data.includes("Answer:")) {
+                        if (currentStep) markDone(currentStep);
+
+                        const answerMatch = data.match(/Answer:\s*(.*?)\s*Citations:/s);
+                        const citationsMatch = data.match(/Citations:\s*(.*)/s);
+
+                        answerContainer.style.display = "block";
+                        document.getElementById("answer-text").textContent = answerMatch ? answerMatch[1].trim() : data;
+
+                        if (citationsMatch) {
+                            const citationParts = citationsMatch[1].split(" | ");
+                            const list = document.getElementById("citations-list");
+                            list.innerHTML = "";
+
+                            citationParts.forEach(part => {
+                                const match = part.trim().match(/^(\d+)\.\s+(.*?)\s+\((https?:\/\/[^)]+)\)$/);
+                                if (match) {
+                                    const [, num, title, url] = match;
+                                    list.innerHTML += `
+                                        <div class="citation-item">
+                                            <span class="citation-num">[${num}]</span>
+                                            <div class="citation-content">
+                                                <span class="citation-title">${title}</span>
+                                                <a class="citation-url" href="${url}" target="_blank">${url}</a>
+                                            </div>
+                                        </div>`;
+                                }
+                            });
+
+                            if (citationParts.length > 0) {
+                                document.getElementById("citations-section").style.display = "block";
+                            }
+                        }
+                    }
+                }
+            }
+
+            btn.disabled = false;
+        }
+
+        document.getElementById("query").addEventListener("keydown", e => {
+            if (e.key === "Enter") search();
+        });
+    </script>
+</body>
+</html>
