@@ -183,6 +183,7 @@ You will receive the original query and collected results from web search, acade
 - `web_results`: A list of web search results with URLs, content summaries, and relevancy scores
 - `academic_results`: A list of academic papers with abstracts and key findings
 - `code_results`: An optional code implementation with explanation
+- `conversation_history`: Previous critic feedback if this is a retry attempt. If present, address the specific issues raised before producing a new answer.
 
 ## Synthesis Guidelines
 
@@ -192,6 +193,7 @@ You will receive the original query and collected results from web search, acade
 4. **Include code naturally.** If code results are present, reference and incorporate them as part of the answer, not as an afterthought.
 5. **Resolve conflicts.** If sources contradict each other, acknowledge the disagreement and favor the more authoritative source.
 6. **Do not pad.** Only include information that directly contributes to answering the query. Omit tangential details.
+7. **If this is a retry, address the critic's feedback.** The conversation history contains specific issues from the previous attempt. Fix them explicitly in this new answer.
 
 ## Citation Guidelines
 

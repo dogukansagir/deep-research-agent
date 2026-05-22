@@ -1,3 +1,4 @@
+from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 from schemas import AgentState, EvalResult
 from prompts import critic_prompt
@@ -26,4 +27,8 @@ def critic(state: AgentState) -> ScoringResult:
         should_retry=(scoring.faithfulness_score < 0.7 or scoring.answer_relevance_score < 0.7 or scoring.answer_completeness_score < 0.7),
         reasoning=scoring.reasoning
     )
-    return {"eval_result": eval_result, "retry_count": state["retry_count"] + 1}
+    return {
+    "eval_result": eval_result,
+    "retry_count": state["retry_count"] + 1,
+    "conversation_history": [HumanMessage(content=f"Previous answer was rejected.\n\nPrevious answer:\n{state['synthesized_answer'].answer}\n\nCritic feedback:\n{eval_result.reasoning}")]
+    }
